@@ -10,6 +10,8 @@ from pox.lib.packet.icmp import icmp
 from pox.lib.packet.arp import arp
 from pox.lib.packet.packet_base import packet_base
 
+OFP_VLAN_NONE = 0xffff
+
 log = core.getLogger()
 
 def my_parser(data, in_port):
@@ -20,6 +22,7 @@ def my_parser(data, in_port):
     # parse ethernet
     packet = ethernet(data)
     match.dl_type = packet.type
+    #print packet.src, packet.dst
     p = packet.next
 
     # parse VLAN
@@ -42,6 +45,7 @@ def my_parser(data, in_port):
         match.nw_src = p.srcip
         match.nw_dst = p.dstip
         match.nw_proto = p.protocol
+        print hex(match.nw_proto)
         # TODO: ip fragmentation
         # This seems a bit strange, but see page 9 of the spec
         if ((p.flags & p.MF_FLAG) or (p.frag != 0)):
@@ -50,6 +54,7 @@ def my_parser(data, in_port):
         p = p.next
 
         if not isinstance(p, packet_base):
+            log.debug("Packet_in: can not parse transport layer")
             return None
         # parse TCP
         if match.nw_proto == ipv4.TCP_PROTOCOL:

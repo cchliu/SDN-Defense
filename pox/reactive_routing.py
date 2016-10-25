@@ -25,16 +25,18 @@ class CBench (object):
         self.connection.send(msg)
 
     def _handle_PacketIn (self, event):
+        log.debug("A packet_in is received...")
         data = event.data
         inport = event.port
         packet_in = event.ofp # The actual ofp_packet in message
+        
         outport = 2
 
         match = my_parser(data, inport)
+        print match
         if match is None:
             self.resend_packet(packet_in, outport) 
             return
-
         msg = of.ofp_flow_mod(command=of.OFPFC_ADD,
                         idle_timeout=of.OFP_FLOW_PERMANENT,
                         hard_timeout=of.OFP_FLOW_PERMANENT,
