@@ -31,11 +31,34 @@ The template for parser.p4 can be found [here](https://github.com/p4lang/switch/
 
 Forward.p4 is an test program that simply forwards all packets on. We test the connectivity of the above topology by loading forward.p4 program into s1 (P4-enabled simple switch) and proactively configuring s2 to forward all packets to h2. From h1 tcpreplay a probe pacekt, and check if h2 receives it. So far so good. 
 
-Mirror.p4 is based on the example code from [here](https://github.com/p4lang/tutorials/blob/master/SIGCOMM_2016/heavy_hitter/solution.tar.gz).
-
-
-
+Mirror.p4 is based on the example code from [here](https://github.com/p4lang/tutorials/blob/master/SIGCOMM_2016/heavy_hitter/solution.tar.gz). In this program, it calculates the 5-tuple hash for each incoming TCP packet and updates the counter based on the hash index. (Note here, if the packet is a TCP SYN or SYN-ACK packet, it clears the corresponding counter first before accumulating packet count). Then it compares the current counter value with parameter K, if less, a copy of the packet is obtained and sent to the mirroring port (port 3 in this case). Meanwhile, incoming packets are forwarded to output port (port 2) as normal.
 
 
 ### Install Snort
-There is a very good tutorial on installing Snort (2.9.9.x) on Ubuntu 14 and 16. The tutorial link is [here](https://www.snort.org/documents/snort-2-9-9-x-on-ubuntu-14-16)
+There is a very good tutorial on installing Snort (2.9.9.x) on Ubuntu 14 and 16. The tutorial link is [here](https://www.snort.org/documents/snort-2-9-9-x-on-ubuntu-14-16).
+
+I am using:
+- daq-2.0.6
+
+  Available DAQ Modules:
+  ```
+  Build AFPacket DAQ module.. : yes
+  Build Dump DAQ module...... : yes
+  Build IPFW DAQ module...... : yes
+  Build IPQ DAQ module....... : no
+  Build NFQ DAQ module....... : no
+  Build PCAP DAQ module...... : yes
+  Build netmap DAQ module.... : no
+  ```
+- snort version 2.9.9.0
+
+  ```
+     ,,_     -*> Snort! <*-
+  o"  )~   Version 2.9.9.0 GRE (Build 56) 
+   ''''    By Martin Roesch & The Snort Team: http://www.snort.org/contact#team
+           Copyright (C) 2014-2016 Cisco and/or its affiliates. All rights reserved.
+           Copyright (C) 1998-2013 Sourcefire, Inc., et al.
+           Using libpcap version 1.7.4
+           Using PCRE version: 8.39 2016-06-14
+           Using ZLIB version: 1.2.8
+  ```
