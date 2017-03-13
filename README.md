@@ -28,11 +28,10 @@ The template for headers.p4 can be found [here](https://github.com/p4lang/switch
 
 The template for parser.p4 can be found [here](https://github.com/p4lang/switch/blob/master/p4src/includes/parser.p4). In our case, the parsing tree is as following:
 
-Forward.p4 is an test program that simply forwards all packets on.
+Forward.p4 is an test program that simply forwards all packets on. We test the connectivity of the above topology by loading forward.p4 program into s1 (P4-enabled simple switch) and proactively configuring s2 to forward all packets to h2. From h1 tcpreplay a probe pacekt, and check if h2 receives it. So far so good. 
 
-We test the connectivity of the above topology by loading forward.p4 program into s1 (P4-enabled simple switch) and proactively configuring s2 to forward all packets to h2.
+Mirror.p4 is based on the example code from [here](https://github.com/p4lang/tutorials/blob/master/SIGCOMM_2016/heavy_hitter/solution.tar.gz).
 
-Mirror.p4 is based on the example code from [here]()
 
 
 
