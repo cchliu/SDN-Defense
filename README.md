@@ -26,7 +26,7 @@ The p4 program is located under /p4src.
 
 The template for headers.p4 can be found [here](https://github.com/p4lang/switch/blob/master/p4src/includes/headers.p4). In our case, we define headers of ethernet, vlan_tag, ipv4, tcp and udp in headers.p4. 
 
-The template for parser.p4 can be found [here](https://github.com/p4lang/switch/blob/master/p4src/includes/parser.p4). In our case, the parsing tree is as following:
+The template for parser.p4 can be found [here](https://github.com/p4lang/switch/blob/master/p4src/includes/parser.p4). In our case, the parsing tree is as following: ![alt-text](https://github.com/cchliu/SDN-Defense/blob/master/figures/parser.png).
 
 Forward.p4 is an test program that simply forwards all packets on. We test the connectivity of the above topology by loading forward.p4 program into s1 (P4-enabled simple switch) and proactively configuring s2 to forward all packets to h2. From h1 tcpreplay a probe pacekt, and check if h2 receives it. So far so good. 
 
