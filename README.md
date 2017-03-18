@@ -62,3 +62,10 @@ I am using:
            Using PCRE version: 8.39 2016-06-14
            Using ZLIB version: 1.2.8
   ```
+- barnyard2 version 2.1.14
+```
+  ______   -*> Barnyard2 <*-
+ / ,,_  \  Version 2.1.14 (Build 337)
+ |o"  )~|  By Ian Firns (SecurixLive): http://www.securixlive.com/
+ + '''' +  (C) Copyright 2008-2013 Ian Firns <firnsy@securixlive.com>
+```
