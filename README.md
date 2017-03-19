@@ -88,4 +88,26 @@ Unsock mode sends the alert information out over a UNIX socket to another proces
 
 A good example on parsing unified2 format can be found here: [unified2](https://github.com/jasonish/py-idstools/blob/master/idstools/unified2.py) and [u2spewfoo](https://github.com/jasonish/py-idstools/blob/master/idstools/scripts/u2spewfoo.py).
 
+Alertpkt structure is defined as (from snort src/output-plugins/spo_alert_unixsock.h):
+```
+typedef struct _Alertpkt
+{
+    uint8_t alertmsg[ALERTMSG_LENGTH]; /* variable.. */
+    struct pcap_pkthdr32 pkth;
+    uint32_t dlthdr;       /* datalink header offset. (ethernet, etc.. ) */
+    uint32_t nethdr;       /* network header offset. (ip etc...) */
+    uint32_t transhdr;     /* transport header offset (tcp/udp/icmp ..) */
+    uint32_t data;
+    uint32_t val;  /* which fields are valid. (NULL could be
+                    * valids also) */
+    /* Packet struct --> was null */
+#define NOPACKET_STRUCT 0x1
+    /* no transport headers in packet */
+#define NO_TRANSHDR    0x2
+    uint8_t pkt[65535];
+    Event event;
+} Alertpkt;
+```
+
+
 
