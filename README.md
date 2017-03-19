@@ -69,3 +69,19 @@ I am using:
  |o"  )~|  By Ian Firns (SecurixLive): http://www.securixlive.com/
  + '''' +  (C) Copyright 2008-2013 Ian Firns <firnsy@securixlive.com>
 ```
+### Snort output format
+Run Snort
+```
+sudo snort -i eno1 -c /etc/snort/snort.conf -u snort -g snort -A unsock -q -N -l /tmp
+```
+We use the following flags:
+```
+ -u snort                      Run Snort as the following user after startup. 
+ -g snort                      Run Snort as the following group after startup.
+ -q                            Quiet mode. Don’t show banner and status report.
+ -N                            Turn off packet logging. The program still generates alerts normally.
+ -l /tmp                       Set the output logging directory to /tmp.
+ -c /etc/snort/snort.conf      The path to snort.conf
+ -A unsock                     Alert using unsock mode. 
+```
+Unsock mode sends the alert information out over a UNIX socket to another process that attaches to that socket.
