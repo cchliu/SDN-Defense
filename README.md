@@ -84,4 +84,7 @@ We use the following flags:
  -c /etc/snort/snort.conf      The path to snort.conf
  -A unsock                     Alert using unsock mode. 
 ```
-Unsock mode sends the alert information out over a UNIX socket to another process that attaches to that socket.
+Unsock mode sends the alert information out over a UNIX socket to another process that attaches to that socket. It turned out that the alert information sent over unsock is not in unified2 format. Instead, Snort will be sending you **Alertpkt structures** which contain alert message, event id, original datagram, libpcap pkthdr, and offsets to datalink, netlayer, and transport layer headers.
+
+
+
