@@ -108,5 +108,16 @@ A good example on parsing unified2 format can be found here: [unified2](https://
 Alertpkt structure is defined in snort src/output-plugins/spo_alert_unixsock.h file.
 
 
+Snort will generate less alerts in mode A compared to mode B:
+- mode A: tcpreplay pcap file to an virtual interface (mtu = 65535) and Snort is sniffing packets on this interface.
+  -- Make sure snort is ready commencing packets before we tcpreplay the packets
+- mode B: Snort read packets from a pcap file.
+The reason is because, packets are being dropped in mode A (incoming packets rate is larger than the packet processing rate of Snort), while in mode B, no packets are dropped; Snort can process packets one at a time.
 
+TODO:
+- Create a virtual interface (maxLen = 65536)
+- tcpreplay pcap file to this interface and Snort is listening to this interface
+- Make sure snort is ready commencing packets before we tcpreplay the packets
+- Run several times and compare if the same number of alerts are triggered
+- Next, why socket fails to deliver all alerts.
 
