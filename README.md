@@ -73,6 +73,19 @@ I am using:
 ```
 PulledPork v0.7.3 - Making signature updates great again!
 ```
+The ruleset I am using is:
+```
+Rule Totals
+    New:-------31173
+    Deleted:---0
+    Enabled:---10065
+    Dropped:---0
+    Disabled:--21108
+    Total:-----31173
+
+IP Blacklist Stats
+    Total IPs:-----26853
+```
 
 ### Snort output format
 Run Snort
