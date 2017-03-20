@@ -6,7 +6,7 @@ SDN-Defense is a framework supporting new network services by piggybacking netwo
 ### Install P4 and configuration
 A very good starting point is following the tutorial [here](https://github.com/p4lang/tutorials/tree/master/SIGCOMM_2015#exercise-1-source-routing)
 
-I am using Ubuntu 16.10 on my machine and it works fine. After finishing the installation of bmv2 and p4c-bmv2, it is good to try out the source_routing example and make sure you could run the example without errors. Now so far so good.
+I am runnning Ubuntu 16.10 on my machine and it works fine. After finishing the installation of bmv2 and p4c-bmv2, it is good to try out the source_routing example and make sure you could run the example without errors. Now so far so good.
 
 ### Install Ryu Controller
 It is easy to install Ryu controller:
@@ -63,16 +63,19 @@ I am using:
            Using ZLIB version: 1.2.8
   ```
 - barnyard2 version 2.1.14
-```
-  ______   -*> Barnyard2 <*-
- / ,,_  \  Version 2.1.14 (Build 337)
- |o"  )~|  By Ian Firns (SecurixLive): http://www.securixlive.com/
- + '''' +  (C) Copyright 2008-2013 Ian Firns <firnsy@securixlive.com>
-```
+
+  ```
+      ______   -*> Barnyard2 <*-
+     / ,,_  \  Version 2.1.14 (Build 337)
+     |o"  )~|  By Ian Firns (SecurixLive): http://www.securixlive.com/
+     + '''' +  (C) Copyright 2008-2013 Ian Firns <firnsy@securixlive.com>
+
+  ```
 - pulledpork version 0.7.3
-```
-PulledPork v0.7.3 - Making signature updates great again!
-```
+
+  ```
+   PulledPork v0.7.3 - Making signature updates great again!
+  ```
 The ruleset I am using (you need to remove the tarballs stored at /tmp in order to re-generate snort.rules file):
 ```
 Rule Stats...
@@ -111,6 +114,7 @@ Alertpkt structure is defined in snort src/output-plugins/spo_alert_unixsock.h f
 - src port
 - dst ip
 - dst port
+- pacekt timestamp
 - alert signature ID
 - alert msg
 - alert classification
