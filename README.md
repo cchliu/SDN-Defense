@@ -112,6 +112,7 @@ Snort will generate less alerts in mode A compared to mode B:
 - mode A: tcpreplay pcap file to an virtual interface (mtu = 65535) and Snort is sniffing packets on this interface.
   -- Make sure snort is ready commencing packets before we tcpreplay the packets
 - mode B: Snort read packets from a pcap file.
+
 The reason is because, packets are being dropped in mode A (incoming packets rate is larger than the packet processing rate of Snort), while in mode B, no packets are dropped; Snort can process packets one at a time.
 
 TODO:
