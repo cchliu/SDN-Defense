@@ -73,18 +73,17 @@ I am using:
 ```
 PulledPork v0.7.3 - Making signature updates great again!
 ```
-The ruleset I am using is:
+The ruleset I am using (you need to remove the tarballs stored at /tmp in order to re-generate snort.rules file):
 ```
-Rule Totals
-    New:-------31173
-    Deleted:---0
-    Enabled:---10065
-    Dropped:---0
-    Disabled:--21108
-    Total:-----31173
-
-IP Blacklist Stats
-    Total IPs:-----26853
+Rule Stats...
+	New:-------31991
+	Deleted:---0
+	Enabled Rules:----10888
+	Dropped Rules:----0
+	Disabled Rules:---21103
+	Total Rules:------31991
+IP Blacklist Stats...
+	Total IPs:-----26853
 ```
 
 ### Snort output format
