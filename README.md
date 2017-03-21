@@ -3,6 +3,17 @@ SDN-Defense is a framework supporting new network services by piggybacking netwo
   - Leveraging the benefit of initial flow packets
   - Leveraging the programmable data plane and control plane in SDN
 
+The original proposal of SDN-Defense [paper](http://conferences.sigcomm.org/sosr/2017/program.html) piggybacks on reactive routing. In reactive routing, the first packet of each new flow is sent to the controller for routing information. Then the controller responds by installing a forwarding rule for this flow, so that subsequent packets of the same flow will match the flow rule and get forwarded in the dataplane. SDN-Defense proposes to delay installation of the forwarding rule until the first *K* packets of a flow are sent to the controller and inspected at the controller site. The value of *K* is a design parameter tunable by the controller.  
+
+However, reactive routing is not widely deployed in networks:
+- SDN controller becomes the bottleneck of the network under large traffic rate.
+- Additional end-to-end latency is introduced as packets are going through the switch-controller-switch loop. 
+
+To improve SDN-Defense, can we:
+- Send a copy of the initial packets to the controller while keeping the original packets forwarded on as normal to minimize end-to-end delay?
+- Offload flow packets counting logic to the dataplane without involvement of the controller?
+Inspried by the development of programmable switches (e.g. P4-enabled switches), we propose 
+
 ### Install P4 and configuration
 A very good starting point is following the tutorial [here](https://github.com/p4lang/tutorials/tree/master/SIGCOMM_2015#exercise-1-source-routing)
 
