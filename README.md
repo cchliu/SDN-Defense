@@ -39,17 +39,6 @@ There is a very good tutorial on installing Snort (2.9.9.x) on Ubuntu 14 and 16.
 
 I am using:
 - daq-2.0.6
-
-  Available DAQ Modules:
-  ```
-  Build AFPacket DAQ module.. : yes
-  Build Dump DAQ module...... : yes
-  Build IPFW DAQ module...... : yes
-  Build IPQ DAQ module....... : no
-  Build NFQ DAQ module....... : no
-  Build PCAP DAQ module...... : yes
-  Build netmap DAQ module.... : no
-  ```
 - snort version 2.9.9.0
 
   ```
