@@ -92,13 +92,12 @@ IP Blacklist Stats...
 ### Snort output format
 Run Snort
 ```
-sudo snort -i eno1 -c /etc/snort/snort.conf -u snort -g snort -A unsock -q -N -l /tmp
+sudo snort -i eno1 -c /etc/snort/snort.conf -u snort -g snort -A unsock -N -l /tmp
 ```
 We use the following flags:
 ```
  -u snort                      Run Snort as the following user after startup. 
  -g snort                      Run Snort as the following group after startup.
- -q                            Quiet mode. Don’t show banner and status report.
  -N                            Turn off packet logging. The program still generates alerts normally.
  -l /tmp                       Set the output logging directory to /tmp.
  -c /etc/snort/snort.conf      The path to snort.conf
@@ -106,6 +105,15 @@ We use the following flags:
 ```
 Unsock mode sends the alert information out over a UNIX socket to another process that attaches to that socket. It turned out that the alert information sent over unsock is not in [unified2](https://www.snort.org/faq/readme-unified2) format. A good example on parsing unified2 format can be found here: [unified2](https://github.com/jasonish/py-idstools/blob/master/idstools/unified2.py) and [u2spewfoo](https://github.com/jasonish/py-idstools/blob/master/idstools/scripts/u2spewfoo.py). Instead, Snort will be sending you **Alertpkt structures** which contain alert message, event id, original datagram, libpcap pkthdr, and offsets to datalink, netlayer, and transport layer headers.
 
+Snort will generate less alerts in mode A compared to mode B:
+- mode A: tcpreplay pcap file to an virtual interface (mtu = 65535) and Snort is sniffing packets on this interface.
+  - Make sure snort is ready commencing packets before we tcpreplay the packets
+- mode B: Snort read packets from a pcap file.
+
+The reason is because, packets are being dropped in mode A (incoming packets rate is larger than the packet processing rate of Snort), while in mode B, no packets are dropped; Snort can process packets one at a time.
+
+
+### Integrate sniffing snort unsock into ryu controller
 Alertpkt structure is defined in snort src/output-plugins/spo_alert_unixsock.h file. File alertpkt.py parses the received alertpkt from snort [reference code](https://github.com/osrg/ryu/blob/master/ryu/lib/alert.py). The final goal is extract from each alertpkt:
 - ipv4 protocol
 - src ip
@@ -117,14 +125,3 @@ Alertpkt structure is defined in snort src/output-plugins/spo_alert_unixsock.h f
 - alert msg
 - alert classification
 - alert priority
-
-
-Snort will generate less alerts in mode A compared to mode B:
-- mode A: tcpreplay pcap file to an virtual interface (mtu = 65535) and Snort is sniffing packets on this interface.
-  - Make sure snort is ready commencing packets before we tcpreplay the packets
-- mode B: Snort read packets from a pcap file.
-
-The reason is because, packets are being dropped in mode A (incoming packets rate is larger than the packet processing rate of Snort), while in mode B, no packets are dropped; Snort can process packets one at a time.
-
-
-### Integrate sniffing snort unsock into ryu controller
