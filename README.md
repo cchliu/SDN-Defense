@@ -154,16 +154,16 @@ Alertpkt structure is defined in snort *src/output-plugins/spo_alert_unixsock.h*
 - alert priority
 
 #### 4. Snort Ryu integration
-Source code for Ryu controller application is located /demo/ryu.
+Source code for Ryu controller application is located */demo/ryu*.
 
-File simpleswitch13.py is a dummy controller, which simply proactively installs a match-all rule to forward all incoming packets to hostB. File simpleswitch13_snort.py is the demo controller:
-- Proactively install a match-all rule with lowest priority to forward incoming packets on to hostB
+File *simpleswitch13.py* is a dummy controller, which simply proactively installs a match-all rule to forward all incoming packets to hostB. File *simpleswitch13_snort.py* is the demo controller:
+- Proactively install a match-all rule with the lowest priority to forward incoming packets on to hostB
   - Minimizing additional end-to-end delay
 - Listen to snort unix domain socket for EventAlert
 - Handle EventAlert by reactively installing a flow entry to drop the malicious flow
-  - In debug mode, we divert malicious flow to veth9 for monitoring
+  - In debug mode, we divert malicious flows to veth9 to monitor
   
-File snort_handler.py is the application which creates the unix domain socket, listens to it and send the alert event to its handler. File snort_event.py defines the EventAlert subclass. They are developed with heavy reference to the example of ofp_event and ofp_handler found in ryu source code *ryu/controller*, in addition to the [snort integration](http://ryu.readthedocs.io/en/latest/snort_integrate.html) documentation and code.  
+File *snort_handler.py* is the application which creates the unix domain socket, listens to it and sends alert events to its handler. File snort_event.py defines the EventAlert subclass. They are developed with heavy reference to the example of ofp_event and ofp_handler under ryu source code *ryu/controller*, in addition to the [snort integration](http://ryu.readthedocs.io/en/latest/snort_integrate.html) documentation and code.  
 ## Usage
 #### 1. Create topology
   ```
