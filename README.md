@@ -99,8 +99,22 @@ Topology:
 Reference to the [example](https://github.com/p4lang/tutorials/tree/master/SIGCOMM_2015/source_routing), we create the above topology in mininet, where s1 is a P4 switch (simple_switch target) and s2 is an OVS. Source code is located under /demo.
 
 **[Option 2]**
-#TODO:Directly create interfaces and link these interfaces with software switches.
+Directly create virtual interfaces and link these interfaces with software switches. Source code is located under /demo:
+- [reference code](https://github.com/p4lang/tutorials/blob/master/SIGCOMM_2015/flowlet_switching/run_demo.sh) for loading and starting p4 switch
+- [reference code](http://groups.geni.net/geni/wiki/GENIExperimenter/Tutorials/OpenFlowOVS/DesignSetup) for starting OVS
 
+Distribution of virtual interfaces is shown below:
+```
+                            +----veth7-------------------------eth1----+
+                                   |                            |
+				 veth6                        OF Path
+    +-------+                 +----------+                  +-------+                 +-------+
+    | HostA |--veth0---veth1--| P4Switch |--veth2----veth3--|  OVS  |--veth4---veth5--| HostB |
+    +-------+                 +----------+                  +-------+                 +-------+
+    							      veth8
+							        |
+							      veth9 (Debug intf)
+```
 #### 2. Write P4 program 
 The p4 program is located under /p4src.
 
