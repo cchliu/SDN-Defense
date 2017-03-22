@@ -1,4 +1,5 @@
 # SDN-Defense
+## Introduction
 SDN-Defense is a framework supporting new network services by piggybacking network functions on the initial packets sent to the controller
   - Leveraging the benefit of initial flow packets
   - Leveraging the programmable data plane and control plane in SDN
@@ -9,46 +10,34 @@ However, reactive routing is not widely deployed in networks, because:
 - SDN controller becomes the bottleneck of the network under large traffic rate.
 - Additional end-to-end latency is introduced as packets are going through the switch-controller-switch loop. 
 
-As an improved solution, we propose to utilize a combination of p4-enabled switches and OVS (Open vSwitch) to instantiate the SDN-Defense framework:
+As an improved solution, we propose to utilize a combination of [p4-enabled switches](http://p4.org/) and OVS (Open vSwitch) to instantiate the SDN-Defense framework:
 - Leverage the capabilities of P4-enabled switches to identify initial flow packets and send a copy of them to the controller, while forwarding packets on as normal to minimize end-to-end delay
 - Leverage the openflow interface between OVS and SDN controller for attack mitigation
 
 This demo is a feasibility study of the above proposal.
-### Demo Overview
+## Demo Overview
 
+```
+               +--------------------------+
+               |        controller        |
+               |    snort   ==>   Ryu     |
+               +----eth0----------eth1----+
+                     |             |
+    +-------+   +----------+   +-------+   +-------+
+    | HostA |---| P4Switch |---|  OVS  |---| HostB |
+    +-------+   +----------+   +-------+   +-------+
+```
+The above depicts the architecture of the demo. HostA servers as an traffic generator and sends packets to HostB. When packets are processed in the P4Switch, they are forwarded on to the next hop as usual, and the first **K** packets of each flow are identified and a copy of them are sent to the controller (interface eth0). An instance of Snort sniffs packets on interface eth0 and sending alerts to the controler application via Unix Domain Socket. The controller application is developed in Ryu. When it receives an alert from Snort, it extracts the 5-tuple information about the malicious flow and installs a rule into OVS to drop this flow.
 
-
-### Install P4 and configuration
-A very good starting point is following the tutorial [here](https://github.com/p4lang/tutorials/tree/master/SIGCOMM_2015#exercise-1-source-routing)
-
-I am runnning Ubuntu 16.10 on my machine and it works fine. After finishing the installation of bmv2 and p4c-bmv2, it is good to try out the source_routing example and make sure you could run the example without errors. Now so far so good.
+## Installing required software
+### Install P4
+A very good starting point is following this [tutorial](https://github.com/p4lang/tutorials/tree/master/SIGCOMM_2015#exercise-1-source-routing). I am runnning Ubuntu 16.10 on my machine and it works fine. After finishing the installation of bmv2 and p4c-bmv2, it is good to try out the source_routing example and make sure you could run the example without errors. Now so far so good.
 
 ### Install Ryu Controller
 It is easy to install Ryu controller:
 ```
 sudo pip install ryu
 ```
-
-### Create Mininet Topology
-Topology: 
-```
-h1 -- s1 (P4 simple_switch) -- s2 (OVS) -- h2
-                 |
-                 h3
-```
-### Write P4 Program 
-The p4 program is located under /p4src.
-
-The template for headers.p4 can be found [here](https://github.com/p4lang/switch/blob/master/p4src/includes/headers.p4). In our case, we define headers of ethernet, vlan_tag, ipv4, tcp and udp in headers.p4. 
-
-The template for parser.p4 can be found [here](https://github.com/p4lang/switch/blob/master/p4src/includes/parser.p4). In our case, the parser is defined as following: 
-<img src="https://github.com/cchliu/SDN-Defense/blob/master/parser.png" width="300">
-
-Forward.p4 is an test program that simply forwards all packets on. We test the connectivity of the above topology by loading forward.p4 program into s1 (P4-enabled simple switch) and proactively configuring s2 to forward all packets to h2. From h1 tcpreplay a probe pacekt, and check if h2 receives it. So far so good. 
-
-Mirror.p4 is based on the example code from [here](https://github.com/p4lang/tutorials/blob/master/SIGCOMM_2016/heavy_hitter/solution.tar.gz). In this program, it calculates the 5-tuple hash for each incoming TCP packet and updates the counter based on the hash index. (Note here, if the packet is a TCP SYN or SYN-ACK packet, it clears the corresponding counter first before accumulating packet count). Then it compares the current counter value with parameter K, if less, a copy of the packet is obtained and sent to the mirroring port (port 3 in this case). Meanwhile, incoming packets are forwarded to output port (port 2) as normal.
-
-
 ### Install Snort
 There is a very good tutorial on installing Snort (2.9.9.x) on Ubuntu 14 and 16. The tutorial link is [here](https://www.snort.org/documents/snort-2-9-9-x-on-ubuntu-14-16).
 
@@ -92,6 +81,27 @@ Rule Stats...
 IP Blacklist Stats...
 	Total IPs:-----26853
 ```
+### Create Mininet Topology
+Topology: 
+```
+h1 -- s1 (P4 simple_switch) -- s2 (OVS) -- h2
+                 |
+                 h3
+```
+### Write P4 Program 
+The p4 program is located under /p4src.
+
+The template for headers.p4 can be found [here](https://github.com/p4lang/switch/blob/master/p4src/includes/headers.p4). In our case, we define headers of ethernet, vlan_tag, ipv4, tcp and udp in headers.p4. 
+
+The template for parser.p4 can be found [here](https://github.com/p4lang/switch/blob/master/p4src/includes/parser.p4). In our case, the parser is defined as following: 
+<img src="https://github.com/cchliu/SDN-Defense/blob/master/parser.png" width="300">
+
+Forward.p4 is an test program that simply forwards all packets on. We test the connectivity of the above topology by loading forward.p4 program into s1 (P4-enabled simple switch) and proactively configuring s2 to forward all packets to h2. From h1 tcpreplay a probe pacekt, and check if h2 receives it. So far so good. 
+
+Mirror.p4 is based on the example code from [here](https://github.com/p4lang/tutorials/blob/master/SIGCOMM_2016/heavy_hitter/solution.tar.gz). In this program, it calculates the 5-tuple hash for each incoming TCP packet and updates the counter based on the hash index. (Note here, if the packet is a TCP SYN or SYN-ACK packet, it clears the corresponding counter first before accumulating packet count). Then it compares the current counter value with parameter K, if less, a copy of the packet is obtained and sent to the mirroring port (port 3 in this case). Meanwhile, incoming packets are forwarded to output port (port 2) as normal.
+
+
+
 
 ### Snort output format
 Run Snort
