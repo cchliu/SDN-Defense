@@ -127,7 +127,6 @@ We use the following flags:
 ```
 Unsock mode sends the alert information out over a UNIX socket to another process that attaches to that socket. It turned out that the alert information sent over unsock is not in [unified2](https://www.snort.org/faq/readme-unified2) format. (BTW, a good example on parsing unified2 format can be found here: [unified2](https://github.com/jasonish/py-idstools/blob/master/idstools/unified2.py) and [u2spewfoo](https://github.com/jasonish/py-idstools/blob/master/idstools/scripts/u2spewfoo.py)). Instead, Snort will be sending you **Alertpkt structures** which contain alert message, event id, original datagram, libpcap pkthdr, and offsets to datalink, netlayer, and transport layer headers.
 
-### 4. Snort Ryu integration 
 Alertpkt structure is defined in snort *src/output-plugins/spo_alert_unixsock.h* file. File alertpkt.py parses the received datagram from snort into an instance of the Alertpkt structure. File alertpkt.py is written with reference to [reference code](https://github.com/osrg/ryu/blob/master/ryu/lib/alert.py). File parser.py continues parsing the structure to extract from each alertpkt:
 - ipv4 protocol
 - src ip
@@ -140,7 +139,7 @@ Alertpkt structure is defined in snort *src/output-plugins/spo_alert_unixsock.h*
 - alert classification
 - alert priority
 
-
+### 4. Snort Ryu integration 
 Snort will generate less alerts in mode A compared to mode B:
 - mode A: tcpreplay pcap file to an virtual interface (mtu = 65535) and Snort is sniffing packets on this interface.
   - Make sure snort is ready commencing packets before we tcpreplay the packets
