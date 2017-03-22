@@ -163,7 +163,7 @@ File *simpleswitch13.py* is a dummy controller, which simply proactively install
 - Handle EventAlert by reactively installing a flow entry to drop the malicious flow
   - In debug mode, we divert malicious flows to veth9 to monitor
   
-File *snort_handler.py* is the application which creates the unix domain socket, listens to it and sends alert events to its handler. File snort_event.py defines the EventAlert subclass. They are developed with heavy reference to the example of ofp_event and ofp_handler under ryu source code *ryu/controller*, in addition to the [snort integration](http://ryu.readthedocs.io/en/latest/snort_integrate.html) documentation and code.  
+File *snort_handler.py* is the application which creates the unix domain socket, listens to it and sends alert events to its handler. File *snort_event.py* defines the EventAlert subclass. They are developed with heavy reference to the example of ofp_event and ofp_handler under ryu source code *ryu/controller*, in addition to the [snort integration](http://ryu.readthedocs.io/en/latest/snort_integrate.html) documentation and code.  
 ## Usage
 #### 1. Create topology
   ```
