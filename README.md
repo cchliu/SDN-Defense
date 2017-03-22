@@ -153,7 +153,31 @@ Alertpkt structure is defined in snort *src/output-plugins/spo_alert_unixsock.h*
 - alert classification
 - alert priority
 
-### 4. Snort Ryu integration 
+#### 4. Snort Ryu integration
+Source code for Ryu controller application is located /demo/ryu.
+
+File simpleswitch13.py is a dummy controller, which simply proactively installs a match-all rule to forward all incoming packets to hostB. File simpleswitch13_snort.py is the demo controller:
+- Proactively install a match-all rule with lowest priority to forward incoming packets on to hostB
+  - Minimizing additional end-to-end delay
+- Listen to snort unix domain socket for EventAlert
+- Handle EventAlert by reactively installing a flow entry to drop the malicious flow
+  - In debug mode, we divert malicious flow to veth9 for monitoring
+  
+File snort_handler.py is the application which creates the unix domain socket, listens to it and send the alert event to its handler. File snort_event.py defines the EventAlert subclass. They are developed with heavy reference to the example of ofp_event and ofp_handler found in ryu source code *ryu/controller*, in addition to the [snort integration](http://ryu.readthedocs.io/en/latest/snort_integrate.html) documentation and code.  
+## Usage
+#### 1. Create topology
+  ```
+  sudo ./run_demo_opt2.sh
+  ```
+#### 2. Run ryu controller
+  ```
+  ryu-manager simpleswitch13_snort.py
+  ```
+#### 3. Run snort
+  ```
+  sudo snort -i veth7 -c /etc/snort/snort.conf -A unsock -N -l /tmp
+  ```
+#### 4. 
 Snort will generate less alerts in mode A compared to mode B:
 - mode A: tcpreplay pcap file to an virtual interface (mtu = 65535) and Snort is sniffing packets on this interface.
   - Make sure snort is ready commencing packets before we tcpreplay the packets
