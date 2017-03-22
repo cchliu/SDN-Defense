@@ -165,6 +165,7 @@ File *simpleswitch13.py* is a dummy controller, which simply proactively install
   
 File *snort_handler.py* is the application which creates the unix domain socket, listens to it and sends alert events to its handler. File *snort_event.py* defines the EventAlert subclass. They are developed with heavy reference to the example of ofp_event and ofp_handler under ryu source code *ryu/controller*, in addition to the [snort integration](http://ryu.readthedocs.io/en/latest/snort_integrate.html) documentation and code.  
 ## Usage
+Execute the following commands in seperate terminals.
 #### 1. Create topology
   ```
   sudo ./run_demo_opt2.sh
@@ -177,8 +178,26 @@ File *snort_handler.py* is the application which creates the unix domain socket,
   ```
   sudo snort -i veth7 -c /etc/snort/snort.conf -A unsock -N -l /tmp
   ```
-#### 4. 
-Snort will generate less alerts in mode A compared to mode B:
+ Wait for initializing snort (~1 minute) until you see **Commencing packet processing** printed out.
+#### 4. Send traffic
+  ```
+  sudo tcpreplay -i veth0 [pcap-file]
+  ```
+You will see alert messages below (printed out in the terminal running ryu controller):
+   ```
+   Received 37 alert
+alertmsg: SENSITIVE-DATA U.S. Social Security Numbers (with dashes)
+sid: 3, classification: 35, priority: 2
+proto: 6, 128.120.72.1.65164 ==> 17.154.66.159.80
+
+Received 38 alert
+alertmsg: (http_inspect) LONG HEADER
+sid: 19, classification: 3, priority: 2
+proto: 6, 169.237.184.94.54248 ==> 169.237.132.142.80
+
+   ```
+
+[A little discussion]: Snort will generate less alerts in mode A compared to mode B:
 - mode A: tcpreplay pcap file to an virtual interface (mtu = 65535) and Snort is sniffing packets on this interface.
   - Make sure snort is ready commencing packets before we tcpreplay the packets
 - mode B: Snort read packets from a pcap file.
