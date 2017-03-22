@@ -194,9 +194,23 @@ Received 38 alert
 alertmsg: (http_inspect) LONG HEADER
 sid: 19, classification: 3, priority: 2
 proto: 6, 169.237.184.94.54248 ==> 169.237.132.142.80
+...
+
+Received 41 alert
+alertmsg: (http_inspect) NO CONTENT-LENGTH OR TRANSFER-ENCODING IN HTTP RESPONSE
+sid: 3, classification: 2, priority: 3
+proto: 6, 131.253.13.140.80 ==> 128.120.72.1.57036
+
 
    ```
-
+You can also check OVS flow table:
+  ```
+  sudo ovs-ofctl dump-flows br0
+  ```
+In debug mode, we divert malicious flows to veth9. Run this command to print RX packets counter of all virtual interfaces:
+  ```
+  sudo ./counter.sh
+  ```
 [A little discussion]: Snort will generate less alerts in mode A compared to mode B:
 - mode A: tcpreplay pcap file to an virtual interface (mtu = 65535) and Snort is sniffing packets on this interface.
   - Make sure snort is ready commencing packets before we tcpreplay the packets
