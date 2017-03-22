@@ -4,7 +4,7 @@ SDN-Defense is a framework supporting new network services by piggybacking netwo
   - Leveraging the benefit of initial flow packets
   - Leveraging the programmable data plane and control plane in SDN
 
-The original proposal of SDN-Defense [paper](http://conferences.sigcomm.org/sosr/2017/program.html) piggybacks on reactive routing. In reactive routing, the first packet of each new flow is sent to the controller for routing information. Then the controller responds by installing a forwarding rule for this flow, so that subsequent packets of the same flow will match the flow rule and get forwarded in the dataplane. SDN-Defense proposes to delay installation of the forwarding rule until the first *K* packets of a flow are sent to the controller and inspected at the controller site. The value of *K* is a design parameter tunable by the controller.  
+The original proposal of SDN-Defense [paper](http://conferences.sigcomm.org/sosr/2017/program.html) piggybacks on reactive routing. In reactive routing, the first packet of each new flow is sent to the controller for routing information. Then the controller responds by installing a forwarding rule for this flow, so that subsequent packets of the same flow will match the flow rule and get forwarded in the dataplane. SDN-Defense proposes to delay installation of the forwarding rule until the first **K** packets of a flow are sent to the controller and inspected at the controller site. The value of **K** is a design parameter tunable by the controller.  
 
 However, reactive routing is not widely deployed in networks, because:
 - SDN controller becomes the bottleneck of the network under large traffic rate.
@@ -99,23 +99,22 @@ Topology:
 Reference to the [example](https://github.com/p4lang/tutorials/tree/master/SIGCOMM_2015/source_routing), we create the above topology in mininet, where s1 is a P4 switch (simple_switch target) and s2 is an OVS. Source code is located under /demo.
 
 **[Option 2]**
-#TODO:Directly create interface and link these interfaces with software switches.
+#TODO:Directly create interfaces and link these interfaces with software switches.
 
 #### 2. Write P4 program 
 The p4 program is located under /p4src.
 
 The template for headers.p4 can be found [here](https://github.com/p4lang/switch/blob/master/p4src/includes/headers.p4). In this demo, we define headers of ethernet, vlan_tag, ipv4, tcp and udp in headers.p4. The template for parser.p4 can be found [here](https://github.com/p4lang/switch/blob/master/p4src/includes/parser.p4). In this demo, the parser is defined as following:
-
 <img src="https://github.com/cchliu/SDN-Defense/blob/master/parser.png" width="280">
 
 Forward.p4 is an test program that simply forwards all packets on. We test the connectivity of the above topology by loading forward.p4 program into s1 (P4-enabled simple switch) and proactively configuring s2 to forward all packets to h2. From h1 tcpreplay a probe pacekt, and check if h2 receives it. So far so good. 
 
 Mirror.p4 is based on the example code from [here](https://github.com/p4lang/tutorials/blob/master/SIGCOMM_2016/heavy_hitter/solution.tar.gz). In this program, it calculates the 5-tuple hash for each incoming TCP packet and updates the counter based on the hash index. (Note here, if the packet is a TCP SYN or SYN-ACK packet, it clears the corresponding counter first before accumulating packet count). Then it compares the current counter value with parameter K, if less, a copy of the packet is obtained and sent to the mirroring port (port 3 in this case). Meanwhile, incoming packets are forwarded to output port (port 2) as normal.
 
-### Snort output format
+#### 3. Snort output format
 Run Snort
 ```
-sudo snort -i eno1 -c /etc/snort/snort.conf -u snort -g snort -A unsock -N -l /tmp
+sudo snort -i veth0 -c /etc/snort/snort.conf -u snort -g snort -A unsock -N -l /tmp
 ```
 We use the following flags:
 ```
@@ -126,18 +125,10 @@ We use the following flags:
  -c /etc/snort/snort.conf      The path to snort.conf
  -A unsock                     Alert using unsock mode. 
 ```
-Unsock mode sends the alert information out over a UNIX socket to another process that attaches to that socket. It turned out that the alert information sent over unsock is not in [unified2](https://www.snort.org/faq/readme-unified2) format. A good example on parsing unified2 format can be found here: [unified2](https://github.com/jasonish/py-idstools/blob/master/idstools/unified2.py) and [u2spewfoo](https://github.com/jasonish/py-idstools/blob/master/idstools/scripts/u2spewfoo.py). Instead, Snort will be sending you **Alertpkt structures** which contain alert message, event id, original datagram, libpcap pkthdr, and offsets to datalink, netlayer, and transport layer headers.
+Unsock mode sends the alert information out over a UNIX socket to another process that attaches to that socket. It turned out that the alert information sent over unsock is not in [unified2](https://www.snort.org/faq/readme-unified2) format. (BTW, a good example on parsing unified2 format can be found here: [unified2](https://github.com/jasonish/py-idstools/blob/master/idstools/unified2.py) and [u2spewfoo](https://github.com/jasonish/py-idstools/blob/master/idstools/scripts/u2spewfoo.py)). Instead, Snort will be sending you **Alertpkt structures** which contain alert message, event id, original datagram, libpcap pkthdr, and offsets to datalink, netlayer, and transport layer headers.
 
-Snort will generate less alerts in mode A compared to mode B:
-- mode A: tcpreplay pcap file to an virtual interface (mtu = 65535) and Snort is sniffing packets on this interface.
-  - Make sure snort is ready commencing packets before we tcpreplay the packets
-- mode B: Snort read packets from a pcap file.
-
-The reason is because, packets are being dropped in mode A (incoming packets rate is larger than the packet processing rate of Snort), while in mode B, no packets are dropped; Snort can process packets one at a time.
-
-
-### Integrate sniffing snort unsock into ryu controller
-Alertpkt structure is defined in snort src/output-plugins/spo_alert_unixsock.h file. File alertpkt.py parses the received alertpkt from snort [reference code](https://github.com/osrg/ryu/blob/master/ryu/lib/alert.py). The final goal is extract from each alertpkt:
+### 4. Snort Ryu integration 
+Alertpkt structure is defined in snort *src/output-plugins/spo_alert_unixsock.h* file. File alertpkt.py parses the received datagram from snort into an instance of the Alertpkt structure. File alertpkt.py is written with reference to [reference code](https://github.com/osrg/ryu/blob/master/ryu/lib/alert.py). File parser.py continues parsing the structure to extract from each alertpkt:
 - ipv4 protocol
 - src ip
 - src port
@@ -148,3 +139,11 @@ Alertpkt structure is defined in snort src/output-plugins/spo_alert_unixsock.h f
 - alert msg
 - alert classification
 - alert priority
+
+
+Snort will generate less alerts in mode A compared to mode B:
+- mode A: tcpreplay pcap file to an virtual interface (mtu = 65535) and Snort is sniffing packets on this interface.
+  - Make sure snort is ready commencing packets before we tcpreplay the packets
+- mode B: Snort read packets from a pcap file.
+
+The reason is because, packets are being dropped in mode A (incoming packets rate is larger than the packet processing rate of Snort), while in mode B, no packets are dropped; Snort can process packets one at a time.
