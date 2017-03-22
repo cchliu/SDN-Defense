@@ -81,27 +81,25 @@ Rule Stats...
 IP Blacklist Stats...
 	Total IPs:-----26853
 ```
-### Create Mininet Topology
+## Development
+We note down major steps when developing the demo.
+### 1. Create topology
 Topology: 
 ```
-h1 -- s1 (P4 simple_switch) -- s2 (OVS) -- h2
+h1 -- s1 (P4Switch) -- s2 (OVS) -- h2
                  |
                  h3
 ```
-### Write P4 Program 
+### 2. Write P4 program 
 The p4 program is located under /p4src.
 
-The template for headers.p4 can be found [here](https://github.com/p4lang/switch/blob/master/p4src/includes/headers.p4). In our case, we define headers of ethernet, vlan_tag, ipv4, tcp and udp in headers.p4. 
+The template for headers.p4 can be found [here](https://github.com/p4lang/switch/blob/master/p4src/includes/headers.p4). In this demo, we define headers of ethernet, vlan_tag, ipv4, tcp and udp in headers.p4. The template for parser.p4 can be found [here](https://github.com/p4lang/switch/blob/master/p4src/includes/parser.p4). In this demo, the parser is defined as following:
 
-The template for parser.p4 can be found [here](https://github.com/p4lang/switch/blob/master/p4src/includes/parser.p4). In our case, the parser is defined as following: 
-<img src="https://github.com/cchliu/SDN-Defense/blob/master/parser.png" width="300">
+<img src="https://github.com/cchliu/SDN-Defense/blob/master/parser.png" width="280">
 
 Forward.p4 is an test program that simply forwards all packets on. We test the connectivity of the above topology by loading forward.p4 program into s1 (P4-enabled simple switch) and proactively configuring s2 to forward all packets to h2. From h1 tcpreplay a probe pacekt, and check if h2 receives it. So far so good. 
 
 Mirror.p4 is based on the example code from [here](https://github.com/p4lang/tutorials/blob/master/SIGCOMM_2016/heavy_hitter/solution.tar.gz). In this program, it calculates the 5-tuple hash for each incoming TCP packet and updates the counter based on the hash index. (Note here, if the packet is a TCP SYN or SYN-ACK packet, it clears the corresponding counter first before accumulating packet count). Then it compares the current counter value with parameter K, if less, a copy of the packet is obtained and sent to the mirroring port (port 3 in this case). Meanwhile, incoming packets are forwarded to output port (port 2) as normal.
-
-
-
 
 ### Snort output format
 Run Snort
