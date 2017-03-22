@@ -82,15 +82,26 @@ IP Blacklist Stats...
 	Total IPs:-----26853
 ```
 ## Development
-We note down major steps when developing the demo.
-### 1. Create topology
+We note down major steps developing the demo.
+#### 1. Create topology
 Topology: 
 ```
-h1 -- s1 (P4Switch) -- s2 (OVS) -- h2
-                 |
-                 h3
+             +--------------------------+
+             |        controller        |
+             |    snort   ==>   Ryu     |
+             +----eth0----------eth1----+
+                   |             |
+    +-------+   +-------+   +-------+   +-------+
+    |  h1   |---|  s1   |---|  s2   |---|  h2   |
+    +-------+   +-------+   +-------+   +-------+
 ```
-### 2. Write P4 program 
+**[Option 1]**
+Reference to the [example](https://github.com/p4lang/tutorials/tree/master/SIGCOMM_2015/source_routing), we create the above topology in mininet, where s1 is a P4 switch (simple_switch target) and s2 is an OVS. Source code is located under /demo.
+
+**[Option 2]**
+#TODO:Directly create interface and link these interfaces with software switches.
+
+#### 2. Write P4 program 
 The p4 program is located under /p4src.
 
 The template for headers.p4 can be found [here](https://github.com/p4lang/switch/blob/master/p4src/includes/headers.p4). In this demo, we define headers of ethernet, vlan_tag, ipv4, tcp and udp in headers.p4. The template for parser.p4 can be found [here](https://github.com/p4lang/switch/blob/master/p4src/includes/parser.p4). In this demo, the parser is defined as following:
