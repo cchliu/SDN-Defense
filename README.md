@@ -33,13 +33,13 @@ The above depicts the architecture of the demo. HostA servers as an traffic gene
 ### Install P4
 A very good starting point is following this [tutorial](https://github.com/p4lang/tutorials/tree/master/SIGCOMM_2015#exercise-1-source-routing). I am runnning Ubuntu 16.10 on my machine and it works fine. After finishing the installation of bmv2 and p4c-bmv2, it is good to try out the source_routing example and make sure you could run the example without errors. Now so far so good.
 
-### Install Ryu Controller
-It is easy to install Ryu controller:
+### Install Ryu 
+It is easy to install Ryu SDN framework:
 ```
 sudo pip install ryu
 ```
 ### Install Snort
-There is a very good tutorial on installing Snort (2.9.9.x) on Ubuntu 14 and 16. The tutorial link is [here](https://www.snort.org/documents/snort-2-9-9-x-on-ubuntu-14-16).
+Snort is an open-source signature-based detection engine. There is a very good tutorial on installing Snort (2.9.9.x) on Ubuntu 14 and 16. The tutorial link is [here](https://www.snort.org/documents/snort-2-9-9-x-on-ubuntu-14-16).
 
 I am using:
 - daq-2.0.6
@@ -69,7 +69,7 @@ I am using:
   ```
    PulledPork v0.7.3 - Making signature updates great again!
   ```
-The ruleset I am using (you need to remove the tarballs stored at /tmp in order to re-generate snort.rules file):
+The ruleset I am using (you need to remove the tarballs stored at /tmp in order to re-generate the snort.rules file):
 ```
 Rule Stats...
 	New:-------31991
