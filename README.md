@@ -11,9 +11,12 @@ However, reactive routing is not widely deployed in networks, because:
 
 As an improved solution, we propose to utilize a combination of p4-enabled switches and OVS (Open vSwitch) to instantiate the SDN-Defense framework:
 - Leverage the capabilities of P4-enabled switches to identify initial flow packets and send a copy of them to the controller, while forwarding packets on as normal to minimize end-to-end delay
-- Leverage the openflow interface between OVS and SDN controller for attack metigation
+- Leverage the openflow interface between OVS and SDN controller for attack mitigation
 
 This demo is a feasibility study of the above proposal.
+### Demo Overview
+
+
 
 ### Install P4 and configuration
 A very good starting point is following the tutorial [here](https://github.com/p4lang/tutorials/tree/master/SIGCOMM_2015#exercise-1-source-routing)
