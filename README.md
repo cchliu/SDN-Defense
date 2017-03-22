@@ -188,18 +188,18 @@ You will see alert messages below (printed out in the terminal running ryu contr
    Received 37 alert
 alertmsg: SENSITIVE-DATA U.S. Social Security Numbers (with dashes)
 sid: 3, classification: 35, priority: 2
-proto: 6, 128.120.72.1.65164 ==> 17.154.66.159.80
+proto: TCP, 128.120.72.1:65164 --> 17.154.66.159:80
 
 Received 38 alert
 alertmsg: (http_inspect) LONG HEADER
 sid: 19, classification: 3, priority: 2
-proto: 6, 169.237.184.94.54248 ==> 169.237.132.142.80
+proto: TCP, 169.237.184.94:54248 --> 169.237.132.142:80
 ...
 
 Received 41 alert
 alertmsg: (http_inspect) NO CONTENT-LENGTH OR TRANSFER-ENCODING IN HTTP RESPONSE
 sid: 3, classification: 2, priority: 3
-proto: 6, 131.253.13.140.80 ==> 128.120.72.1.57036
+proto: TCP, 131.253.13.140:80 --> 128.120.72.1:57036
 
 
    ```
