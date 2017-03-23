@@ -14,7 +14,7 @@ As an improved solution, we propose to utilize a combination of [p4-enabled swit
 - Leverage the capabilities of P4-enabled switches to identify initial flow packets and send a copy of them to the controller, while forwarding packets on as normal to minimize end-to-end delay
 - Leverage the openflow interface between OVS and SDN controller for attack mitigation
 
-This demo is a feasibility study of the above proposal.
+This demo is a practical implementation of the above proposal.
 ## Demo Overview
 
 ```
