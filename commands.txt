@@ -1,0 +1,10 @@
+table_set_default load_K set_K 4
+table_set_default select_tcp label_tcp
+table_set_default clear_pkt_counter _no_op
+table_set_default update_pkt_counter add_flow_pkt_counter
+table_set_default mirror_select mirror
+table_set_default forward set_nhop 2
+table_add select_tcp _no_op 0 =>
+table_add clear_pkt_counter clear_flow_pkt_counter 2 =>
+table_add clear_pkt_counter clear_flow_pkt_counter 18 =>
+mirroring_add 100 3
