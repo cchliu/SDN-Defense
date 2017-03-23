@@ -1,0 +1,60 @@
+typedef struct _Alertpkt
+{
+    uint8_t alertmsg[ALERTMSG_LENGTH]; /* variable.. */
+    struct pcap_pkthdr32 pkth;
+    uint32_t dlthdr;       /* datalink header offset. (ethernet, etc.. ) */
+    uint32_t nethdr;       /* network header offset. (ip etc...) */
+    uint32_t transhdr;     /* transport header offset (tcp/udp/icmp ..) */
+    uint32_t data;
+    uint32_t val;  /* which fields are valid. (NULL could be
+                    * valids also) */
+    /* Packet struct --> was null */
+#define NOPACKET_STRUCT 0x1
+    /* no transport headers in packet */
+#define NO_TRANSHDR    0x2
+    uint8_t pkt[65535];
+    Event event;
+} Alertpkt;
+
+
+typedef struct _Event
+{
+    uint32_t sig_generator;   /* which part of snort generated the alert? */
+    uint32_t sig_id;          /* sig id for this generator */
+    uint32_t sig_rev;         /* sig revision for this id */
+    uint32_t classification;  /* event classification */
+    uint32_t priority;        /* event priority */
+    uint32_t event_id;        /* event ID */
+    uint32_t event_reference; /* reference to other events that have gone off,
+                                * such as in the case of tagged packets...
+                                */
+    struct sf_timeval32 ref_time;   /* reference time for the event reference */
+
+#if defined(FEAT_OPEN_APPID)
+    char     app_name[MAX_EVENT_APPNAME_LEN];
+#endif /* defined(FEAT_OPEN_APPID) */
+    /* Don't add to this structure because this is the serialized data
+     * struct for unified logging.
+     */
+} Event;
+
+
+/* we must use fixed size of 32 bits, because on-disk
+ * format of savefiles uses 32-bit tv_sec (and tv_usec)
+ */
+struct sf_timeval32
+{
+    uint32_t tv_sec;      /* seconds */
+    uint32_t tv_usec;     /* microseconds */
+};
+
+/* this is equivalent to the pcap pkthdr struct, but we need
+ * a 32 bit one for unified output
+ */
+struct pcap_pkthdr32
+{
+    struct sf_timeval32 ts;   /* packet timestamp */
+    uint32_t caplen;          /* packet capture length */
+    uint32_t len;             /* packet "real" length */
+};
+
