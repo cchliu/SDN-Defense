@@ -100,7 +100,7 @@ Reference to the [example](https://github.com/p4lang/tutorials/tree/master/SIGCO
 
 **[Option 2]**
 Directly create virtual interfaces and link these interfaces with software switches. Source code is located under /demo:
-- [reference code](https://github.com/p4lang/tutorials/blob/master/SIGCOMM_2015/flowlet_switching/run_demo.sh) for loading and starting p4 switch
+- [reference code](https://github.com/p4lang/tutorials/tree/master/SIGCOMM_2015/flowlet_switching) for loading and starting p4 switch
 - [reference code](http://groups.geni.net/geni/wiki/GENIExperimenter/Tutorials/OpenFlowOVS/DesignSetup) for starting OVS
 
 Distribution of virtual interfaces is shown below:
@@ -141,7 +141,7 @@ We use the following flags:
 ```
 Unsock mode sends the alert information out over a UNIX socket to another process that attaches to that socket. It turned out that the alert information sent over unsock is not in [unified2](https://www.snort.org/faq/readme-unified2) format. (BTW, a good example on parsing unified2 format can be found here: [unified2](https://github.com/jasonish/py-idstools/blob/master/idstools/unified2.py) and [u2spewfoo](https://github.com/jasonish/py-idstools/blob/master/idstools/scripts/u2spewfoo.py)). Instead, Snort will be sending you **Alertpkt structures** which contain alert message, event id, original datagram, libpcap pkthdr, and offsets to datalink, netlayer, and transport layer headers.
 
-Alertpkt structure is defined in snort *src/output-plugins/spo_alert_unixsock.h* file. File alertpkt.py parses the received datagram from snort into an instance of the Alertpkt structure. File alertpkt.py is written with reference to [reference code](https://github.com/osrg/ryu/blob/master/ryu/lib/alert.py). File parser.py continues parsing the structure to extract from each alertpkt:
+Alertpkt structure is defined in snort *src/output-plugins/spo_alert_unixsock.h* file. File alertpkt.py parses the received datagram from snort into an instance of the Alertpkt structure. File alertpkt.py is written with reference to [reference code](https://github.com/osrg/ryu/blob/master/ryu/lib/alert.py). File alert_parser.py continues parsing the structure to extract from each alertpkt:
 - ipv4 protocol
 - src ip
 - src port
