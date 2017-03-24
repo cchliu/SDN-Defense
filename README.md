@@ -165,7 +165,7 @@ File *simpleswitch13.py* is a dummy controller, which simply proactively install
   
 File *snort_handler.py* is the application which creates the unix domain socket, listens to it and sends alert events to its handler. File *snort_event.py* defines the EventAlert subclass. They are developed with heavy reference to the example of ofp_event and ofp_handler under ryu source code *ryu/controller*, in addition to the [snort integration](http://ryu.readthedocs.io/en/latest/snort_integrate.html) documentation and code.  
 ## Usage
-Execute the following commands in seperate terminals.
+Execute the following commands in separate terminals.
 #### 1. Create topology
   ```
   sudo ./run_demo_opt2.sh
@@ -212,8 +212,8 @@ In debug mode, we divert malicious flows to veth9. Run this command to print RX 
   sudo ./counter.sh
   ```
 [A little discussion]: Snort will generate less alerts in mode A compared to mode B:
-- mode A: tcpreplay pcap file to an virtual interface (mtu = 65535) and Snort is sniffing packets on this interface.
-  - Make sure snort is ready commencing packets before we tcpreplay the packets
+- mode A: tcpreplay a pcap file to an virtual interface (mtu = 65535) and Snort is sniffing packets on this interface.
+  - Make sure Snort is ready commencing packets before we tcpreplay the packets
 - mode B: Snort read packets from a pcap file.
 
-The reason is because, packets are being dropped in mode A (incoming packets rate is larger than the packet processing rate of Snort), while in mode B, no packets are dropped; Snort can process packets one at a time.
+The reason is because packets are dropped in mode A (incoming packets rate is larger than the packet processing rate of Snort), while in mode B, no packets are dropped; Snort can process packets one at a time.
